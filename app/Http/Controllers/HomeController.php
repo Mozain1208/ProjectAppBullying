@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class HomeController extends Controller
+{
+    /**
+     * Display the landing page.
+     * Redirect to dashboard if user is already logged in.
+     */
+    public function index()
+    {
+        // Redirect to dashboard if user is already logged in
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('index');
+    }
+}

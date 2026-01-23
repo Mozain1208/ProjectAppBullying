@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Form Laporan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .bullying-type-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+            display: block;
+            position: relative;
+        }
+
+        .bullying-type-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .bullying-type-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .bullying-type-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            z-index: 10;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-6">Test Form Laporan Bullying</h1>
+        
+        <form id="testForm">
+            <!-- Pilih Jenis Bullying -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-4">
+                    <i class="fas fa-tags text-orange-600 mr-2"></i>
+                    Pilih Jenis Bullying
+                </h2>
+                <p class="text-gray-600 mb-4">Pilih salah satu jenis bullying yang terjadi</p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <label class="bullying-type-card p-4 rounded-xl">
+                        <input type="radio" name="bullying_type" value="verbal" class="bullying-radio" required>
+                        <div class="text-center pointer-events-none">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-red-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-comment-dots text-3xl text-red-600"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Verbal</h3>
+                            <p class="text-sm text-gray-600">Ejekan, hinaan, ancaman</p>
+                        </div>
+                    </label>
+                    
+                    <label class="bullying-type-card p-4 rounded-xl">
+                        <input type="radio" name="bullying_type" value="fisik" class="bullying-radio" required>
+                        <div class="text-center pointer-events-none">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-hand-rock text-3xl text-orange-600"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Fisik</h3>
+                            <p class="text-sm text-gray-600">Kekerasan, pemukulan</p>
+                        </div>
+                    </label>
+                    
+                    <label class="bullying-type-card p-4 rounded-xl">
+                        <input type="radio" name="bullying_type" value="sosial" class="bullying-radio" required>
+                        <div class="text-center pointer-events-none">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-purple-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-slash text-3xl text-purple-600"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Sosial</h3>
+                            <p class="text-sm text-gray-600">Pengucilan, isolasi</p>
+                        </div>
+                    </label>
+                    
+                    <label class="bullying-type-card p-4 rounded-xl">
+                        <input type="radio" name="bullying_type" value="emosional" class="bullying-radio" required>
+                        <div class="text-center pointer-events-none">
+                            <div class="w-16 h-16 mx-auto mb-3 bg-pink-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-heart-broken text-3xl text-pink-600"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-900 mb-1">Emosional</h3>
+                            <p class="text-sm text-gray-600">Manipulasi, intimidasi</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Upload Bukti -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold mb-4">
+                    <i class="fas fa-images text-green-600 mr-2"></i>
+                    Bukti Pendukung
+                </h2>
+                
+                <div id="drop-zone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition bg-white cursor-pointer">
+                    <i id="upload-icon" class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i>
+                    <div class="cursor-pointer">
+                        <span id="upload-text" class="text-blue-600 font-semibold">Klik untuk upload</span>
+                        <span class="text-gray-600"> atau tarik (drag & drop) file ke sini</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Gambar (JPG, PNG, JFIF), Video, Audio, PDF</p>
+                    <p class="text-xs text-gray-400 mt-1">Maksimal 50MB per file, total 200MB</p>
+                    <input 
+                        type="file" 
+                        class="hidden" 
+                        id="evidence" 
+                        name="evidence[]" 
+                        accept=".jpg,.jpeg,.png,.jfif,.mp4,.mp3,.pdf,.wav,.mkv,.avi,.mov,.flac,.aac" 
+                        multiple
+                    >
+                    <div id="file-list" class="mt-4 text-left space-y-2 hidden">
+                        <!-- Preview file list will be here -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="status" class="mb-4 p-4 rounded-lg hidden"></div>
+            
+            <button type="submit" class="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">
+                Test Submit
+            </button>
+        </form>
+    </div>
+
+    <script>
+        console.log('Script loaded');
+        
+        // Test Radio Buttons
+        document.querySelectorAll('.bullying-radio').forEach(radio => {
+            console.log('Radio found:', radio.value);
+            radio.addEventListener('change', function() {
+                console.log('Radio changed to:', this.value);
+                document.querySelectorAll('.bullying-type-card').forEach(card => card.classList.remove('selected'));
+                if (this.checked) {
+                    this.closest('.bullying-type-card').classList.add('selected');
+                }
+            });
+        });
+
+        // Test File Upload
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('evidence');
+        const fileListContainer = document.getElementById('file-list');
+        const uploadIcon = document.getElementById('upload-icon');
+        const uploadText = document.getElementById('upload-text');
+        
+        let allFiles = [];
+
+        dropZone.addEventListener('click', (e) => {
+            console.log('Drop zone clicked');
+            if (e.target.closest('.remove-file')) return;
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            console.log('Files selected:', this.files.length);
+            handleFiles(this.files);
+        });
+
+        // Drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                console.log('Drag over');
+                dropZone.classList.add('border-blue-500', 'bg-blue-50');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            console.log('Files dropped');
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }, false);
+
+        function handleFiles(files) {
+            console.log('Handling files:', files.length);
+            const newFiles = Array.from(files);
+            
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'jfif', 'mp4', 'mp3', 'pdf', 'wav', 'mkv', 'avi', 'mov', 'flac', 'aac'];
+            const maxFileSize = 50 * 1024 * 1024; // 50MB
+            const maxTotalSize = 200 * 1024 * 1024; // 200MB
+            
+            let currentTotalSize = allFiles.reduce((acc, f) => acc + f.size, 0);
+
+            newFiles.forEach(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedExtensions.includes(ext)) {
+                    alert(`File "${file.name}" tidak didukung.`);
+                    return;
+                }
+
+                if (file.size > maxFileSize) {
+                    alert(`File "${file.name}" terlalu besar (Max 50MB).`);
+                    return;
+                }
+
+                if (currentTotalSize + file.size > maxTotalSize) {
+                    alert("Total ukuran file melebihi 200MB.");
+                    return;
+                }
+
+                const isDuplicate = allFiles.some(f => f.name === file.name && f.size === file.size);
+                if (!isDuplicate) {
+                    allFiles.push(file);
+                    currentTotalSize += file.size;
+                }
+            });
+
+            updateFileInput();
+            renderFileList();
+        }
+
+        function updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            allFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+
+            if (allFiles.length > 0) {
+                uploadIcon.className = 'fas fa-check-circle text-6xl text-green-500 mb-4';
+                uploadText.innerHTML = `<span class="text-green-600 font-bold">${allFiles.length} File terpilih</span>`;
+            } else {
+                uploadIcon.className = 'fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4';
+                uploadText.innerHTML = `<span class="text-blue-600 font-semibold">Klik untuk upload</span>`;
+            }
+        }
+
+        function renderFileList() {
+            if (allFiles.length > 0) {
+                fileListContainer.innerHTML = '';
+                fileListContainer.classList.remove('hidden');
+                allFiles.forEach((file, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200';
+                    div.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="fas fa-file mr-3 text-blue-500"></i>
+                            <span class="font-medium text-gray-700">${file.name}</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="text-xs text-gray-400">${(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+                            <button type="button" onclick="removeFile(${index})" class="remove-file text-red-500 hover:text-red-700">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </div>
+                    `;
+                    fileListContainer.appendChild(div);
+                });
+            } else {
+                fileListContainer.classList.add('hidden');
+            }
+        }
+
+        window.removeFile = function(index) {
+            console.log('Removing file:', index);
+            allFiles.splice(index, 1);
+            updateFileInput();
+            renderFileList();
+        }
+
+        // Form submit test
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const status = document.getElementById('status');
+            const selectedType = document.querySelector('input[name="bullying_type"]:checked');
+            
+            status.classList.remove('hidden', 'bg-red-100', 'bg-green-100');
+            
+            if (!selectedType) {
+                status.classList.add('bg-red-100');
+                status.innerHTML = '<strong>Error:</strong> Pilih jenis bullying!';
+            } else if (allFiles.length === 0) {
+                status.classList.add('bg-red-100');
+                status.innerHTML = '<strong>Error:</strong> Upload minimal 1 file bukti!';
+            } else {
+                status.classList.add('bg-green-100');
+                status.innerHTML = `<strong>Success!</strong> Jenis: ${selectedType.value}, Files: ${allFiles.length}`;
+            }
+        });
+    </script>
+</body>
+</html>
