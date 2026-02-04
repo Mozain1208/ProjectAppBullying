@@ -103,4 +103,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Consultation::class);
     }
+    /**
+     * Get report handlings performed by this user (admin)
+     */
+    public function reportHandlings()
+    {
+        return $this->hasMany(ReportHandling::class, 'admin_id');
+    }
 }

@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('images/dewasa_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -21,11 +28,11 @@
         </div>
     </nav>
 
-    <header class="bg-gradient-to-r from-purple-600 to-indigo-600 py-20 text-center text-white">
+    <header class="hero-gradient py-20 text-center text-white">
         <div class="container mx-auto px-4">
-            <i class="fas fa-search-plus text-6xl mb-6 opacity-80"></i>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Deteksi Dini Bullying</h1>
-            <p class="text-xl max-w-2xl mx-auto opacity-90">Anak-anak seringkali tidak menceritakan apa yang mereka alami. Ketahui tanda-tandanya sejak dini.</p>
+            <i class="fas fa-search-plus text-6xl mb-6 opacity-80 drop-shadow-lg"></i>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow">Deteksi Dini Bullying</h1>
+            <p class="text-xl max-w-2xl mx-auto text-shadow font-medium">Anak-anak seringkali tidak menceritakan apa yang mereka alami. Ketahui tanda-tandanya sejak dini.</p>
         </div>
     </header>
 

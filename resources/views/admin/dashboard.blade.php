@@ -132,7 +132,7 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 datasets: [{
                     label: 'Laporan',
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, {{ $stats['total_reports'] }}],
+                    data: {!! json_encode($trend_data) !!},
                     borderColor: '#3b82f6',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     fill: true,
@@ -154,10 +154,12 @@
         new Chart(document.getElementById('bullyingTypesChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Verbal', 'Fisik', 'Sosial', 'Cyber'],
+                labels: {!! json_encode(array_keys($bullying_types_stats)) !!}.map(function(label) {
+                    return label.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                }),
                 datasets: [{
-                    data: [{{ $stats['total_reports'] }}, 0, 0, 0],
-                    backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'],
+                    data: {!! json_encode(array_values($bullying_types_stats)) !!},
+                    backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'],
                     borderWidth: 0
                 }]
             },

@@ -54,6 +54,12 @@ class LoginController extends Controller
             return back()->withErrors(['login' => 'Akun Anda telah diblokir. Silakan hubungi admin.'])->withInput();
         }
 
+        // Check if user is still pending (unverified)
+        if ($user->account_status === 'pending') {
+            return redirect()->route('verification.notice', ['email' => $user->email])
+                ->with('info', 'Email Anda belum diverifikasi. Silakan masukkan kode verifikasi.');
+        }
+
         // Verify password
         if (!Hash::check($password, $user->password)) {
             return back()->withErrors(['login' => 'Password salah!'])->withInput();

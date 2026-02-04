@@ -112,6 +112,16 @@ class ReportController extends Controller
             'is_anonymous' => $report->anonymous
         ], Auth::id());
 
+        // Send Email Notification to Admin
+        try {
+            $admins = \App\Models\User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                \Illuminate\Support\Facades\Mail::to($admin->email)->send(new \App\Mail\NewReportNotification($report));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal mengirim email notifikasi laporan baru: ' . $e->getMessage());
+        }
+
         return back()->with('success', 'Laporan berhasil dikirim! Tim kami akan segera menindaklanjuti.');
     }
 

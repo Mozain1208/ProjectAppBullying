@@ -6,35 +6,46 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('age_category', ['child', 'teen', 'adult']);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('victim_name');
+            $table->string('perpetrator_name');
+            $table->string('bullying_type'); // Verbal, Fisik, Sosial, Cyber
+            $table->date('incident_date');
+            $table->string('incident_location');
             $table->text('description');
-            $table->enum('bullying_type', ['verbal', 'fisik', 'sosial', 'emosional']);
-            $table->enum('status', ['pending', 'process', 'resolved'])->default('pending');
-            $table->string('location');
-            $table->dateTime('incident_time');
-            $table->boolean('anonymous')->default(false);
+            $table->enum('status', ['pending', 'investigating', 'resolved', 'dismissed'])->default('pending');
+            $table->text('admin_notes')->nullable();
+            $table->boolean('is_anonymous')->default(false);
             $table->timestamps();
-            
-            // Indexes
-            $table->index('status');
-            $table->index('bullying_type');
-            $table->index('created_at');
+        });
+
+        Schema::create('report_evidences', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('report_id')->constrained()->onDelete('cascade');
+            $table->string('file_path');
+            $table->string('file_type')->nullable();
+            $table->integer('file_size')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('report_messages', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('report_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('message');
+            $table->boolean('is_admin')->default(false);
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::dropIfExists('report_messages');
+        Schema::dropIfExists('report_evidences');
         Schema::dropIfExists('reports');
     }
 };

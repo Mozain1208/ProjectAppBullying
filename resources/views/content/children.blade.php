@@ -1,195 +1,409 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bantuan untuk Anak (5-12 tahun) - StopBullying</title>
-    <meta name="description" content="Informasi dan panduan keamanan online untuk anak usia 5-12 tahun">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-gradient {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        .btn-help {
-            transition: all 0.3s ease;
-        }
-        .btn-help:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
-        }
-    </style>
-</head>
-<body class="bg-gray-50 transition-colors duration-300">
-    <!-- Header with Navigation -->
-    <header class="bg-white shadow-sm sticky top-0 z-50 transition-colors duration-300">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                        <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-xl font-bold text-gray-800 dark:text-white">StopBullying</span>
-                </div>
-                
-                <!-- Navigation Menu -->
-                <nav class="hidden lg:flex items-center space-x-6">
-                    <a href="{{ route('dashboard') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Home</a>
-                    <a href="{{ route('content.children') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition font-semibold border-b-2 border-blue-600 dark:border-blue-400">Anak (5-12 tahun)</a>
-                    <a href="{{ route('content.teens') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Remaja (13-17 tahun)</a>
-                    <a href="{{ route('content.adults') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Dewasa</a>
-                    <a href="{{ Auth::user()->role == 'admin' ? route('admin.reports') : route('report.create') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">
-                        {{ Auth::user()->role == 'admin' ? 'Kelola Laporan' : 'Laporkan Bullying' }}
-                    </a>
-                    <a href="{{ route('report.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Laporan Saya</a>
-                    <a href="{{ route('consultation.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Ruang Konsultasi</a>
-                    @if(Auth::user()->role == 'admin')
-                        <a href="{{ route('admin.dashboard') }}#analytics" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Analisis Data</a>
-                    @endif
-                </nav>
-                
-                <div class="flex items-center space-x-4">
+@extends('layouts.app')
 
-                    <a href="{{ route('logout') }}" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 font-medium">
-                        Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
+@section('title', 'Bantuan untuk Anak (5-12 tahun) - StopBullying')
 
+@section('styles')
+<style>
+    .hero-gradient {
+        background: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url('{{ asset('images/anak_bg.jpg') }}') !important;
+        background-color: #065f46 !important;
+        background-size: cover !important;
+        background-position: center bottom !important;
+        background-repeat: no-repeat !important;
+    }
+    .info-card {
+        transition: all 0.3s ease;
+    }
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+    .quiz-container {
+        display: none;
+    }
+    .quiz-container.active {
+        display: block;
+    }
+    /* Responsiveness for 14" laptops (approx 1366px - 1536px) */
+    @media (max-width: 1536px) {
+        .container {
+            max-width: 1280px;
+        }
+        h1 { font-size: 2.5rem !important; }
+        h2 { font-size: 1.875rem !important; }
+        p { font-size: 1rem !important; }
+    }
+</style>
+@endsection
+
+@section('content')
     <!-- Hero Section -->
-    <section class="hero-gradient py-16">
-        <div class="container mx-auto px-4">
-            <div class="max-w-6xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div class="text-white flex-1">
-                        <h1 class="text-4xl md:text-5xl font-bold mb-4">
-                            Bantuan & Panduan untuk <span class="underline decoration-4 underline-offset-8">Anak Usia 5-12 tahun</span>
-                        </h1>
-                        <p class="text-lg md:text-xl text-green-50 mt-6">
-                            Informasi bermanfaat dan panduan tentang berbagai topik keamanan online
-                        </p>
+    <section class="hero-gradient py-24 md:py-36">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 text-shadow">
+                Bantuan & Panduan untuk <span class="underline decoration-4 underline-offset-8">Anak Usia 5-12 tahun</span>
+            </h1>
+            <p class="text-lg md:text-xl text-white mt-6 max-w-3xl mx-auto text-shadow font-medium">
+                Halo teman-teman! Yuk, kita belajar bersama tentang apa itu bullying, bagaimana cara menghindarinya, dan bagaimana kita bisa saling menyayangi.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <a href="#apa-itu-bullying" class="bg-white text-green-700 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-green-50 transition">Apa itu Bullying?</a>
+                <a href="#kuis-deteksi" class="bg-yellow-400 text-yellow-900 px-6 py-3 rounded-full font-bold shadow-lg hover:bg-yellow-300 transition">Kuis: Apakah Aku Di-bully?</a>
+                <a href="#kuis-refleksi" class="bg-blue-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-blue-700 transition">Kuis: Apakah Aku Membully?</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Apa Itu Bullying (KIRI: Teks, KANAN: Visual) -->
+    <section id="apa-itu-bullying" class="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- KIRI: Konten Teks -->
+                <div class="md:w-1/2 space-y-6">
+                    <div class="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full font-bold text-sm uppercase tracking-wider">
+                        Pengertian
                     </div>
-                    <div class="flex-shrink-0">
-                        <button class="btn-help bg-white text-green-700 px-8 py-4 rounded-lg font-semibold text-lg shadow-lg">
-                            Dapatkan Bantuan
-                        </button>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                        Apa Itu <span class="text-green-600">Bullying?</span>
+                    </h2>
+                    <p class="text-gray-700 text-lg leading-relaxed">
+                        <span class="font-bold text-green-600">Bullying</span> (perundungan) adalah ketika seseorang menyakiti orang lain dengan <span class="bg-yellow-100 px-2 py-1 rounded font-semibold">sengaja</span> dan <span class="bg-yellow-100 px-2 py-1 rounded font-semibold">berulang kali</span>.
+                    </p>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        Ini bukan sekadar bercanda, karena orang yang di-bully merasa <strong class="text-red-600">sedih, takut, dan tidak berdaya</strong>.
+                    </p>
+                    <div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-md border-l-4 border-green-500">
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-heart-broken text-green-600 text-2xl"></i>
+                        </div>
+                        <p class="font-semibold text-gray-800">Membuat korban merasa sedih & takut</p>
+                    </div>
+                </div>
+
+                <!-- KANAN: Visual/Ilustrasi -->
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-green-200 rounded-full blur-3xl opacity-30"></div>
+                        <div class="relative bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-8 shadow-2xl border-4 border-green-200">
+                            <div class="text-center space-y-6">
+                                <i class="fas fa-hand-paper text-9xl text-green-500 drop-shadow-lg"></i>
+                                <div class="bg-white px-6 py-3 rounded-full shadow-lg">
+                                    <span class="text-green-700 font-bold text-lg">Stop Bullying!</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Content Cards Section -->
-    <section class="container mx-auto px-4 py-16">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-3 gap-8">
-                
-                <!-- Card 0: What is Bullying? -->
-                <a href="{{ route('content.bullyingInfo') }}" class="block bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
-                    <div class="h-64 bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-                        <i class="fas fa-bullhorn text-white text-8xl opacity-80 relative z-10"></i>
+    <!-- Section 2: Jenis Bullying (KIRI: Teks, KANAN: Visual) -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- KIRI: Konten Teks -->
+                <div class="md:w-1/2 space-y-6">
+                    <div class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-bold text-sm uppercase tracking-wider">
+                        Kategori
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">
-                            Apa itu Bullying?
-                        </h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Yuk cari tahu apa itu bullying, jenisnya, dan dimana saja itu bisa terjadi.
-                        </p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                        Jenis-jenis <span class="text-blue-600">Bullying</span>
+                    </h2>
+                    <p class="text-gray-600 text-lg">
+                        Bullying bisa terjadi dalam berbagai bentuk. Yuk kenali supaya kita bisa menghindarinya!
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:translate-x-1">
+                            <div class="bg-green-500 p-3 rounded-lg flex-shrink-0">
+                                <i class="fas fa-comment text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Verbal (Kata-kata)</h4>
+                                <p class="text-sm text-gray-600">Mengejek, menghina, memanggil nama buruk, atau mengancam.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:translate-x-1">
+                            <div class="bg-blue-500 p-3 rounded-lg flex-shrink-0">
+                                <i class="fas fa-hand-rock text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Fisik</h4>
+                                <p class="text-sm text-gray-600">Memukul, mendorong, menendang, atau merusak barang.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:translate-x-1">
+                            <div class="bg-purple-500 p-3 rounded-lg flex-shrink-0">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Sosial</h4>
+                                <p class="text-sm text-gray-600">Menghasut teman untuk menjauhi seseorang atau menyebar rahasia.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-xl hover:shadow-lg transition-all duration-300 hover:translate-x-1">
+                            <div class="bg-red-500 p-3 rounded-lg flex-shrink-0">
+                                <i class="fas fa-mobile-alt text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Cyberbullying</h4>
+                                <p class="text-sm text-gray-600">Bullying lewat HP, tablet, atau komputer (Chat/Game).</p>
+                            </div>
+                        </div>
                     </div>
-                </a>
+                </div>
 
-                <!-- Card Quiz: Is it Bullying? -->
-                <a href="{{ route('content.bullyingQuiz') }}" class="block bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
-                    <div class="h-64 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-                        <i class="fas fa-question-circle text-white text-8xl opacity-80 relative z-10"></i>
+                <!-- KANAN: Visual -->
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
+                        <div class="relative grid grid-cols-2 gap-4">
+                            <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-blue-500 hover:scale-105 transition">
+                                <i class="fas fa-comment-dots text-4xl text-blue-500 mb-2"></i>
+                                <div class="h-2 bg-blue-100 rounded mb-1 w-3/4"></div>
+                                <div class="h-2 bg-blue-100 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-500 mt-8 hover:scale-105 transition">
+                                <i class="fas fa-hand-rock text-4xl text-red-500 mb-2"></i>
+                                <div class="h-2 bg-red-100 rounded mb-1 w-3/4"></div>
+                                <div class="h-2 bg-red-100 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-purple-500 hover:scale-105 transition">
+                                <i class="fas fa-user-friends text-4xl text-purple-500 mb-2"></i>
+                                <div class="h-2 bg-purple-100 rounded mb-1 w-3/4"></div>
+                                <div class="h-2 bg-purple-100 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-indigo-500 mt-8 hover:scale-105 transition">
+                                <i class="fas fa-wifi text-4xl text-indigo-500 mb-2"></i>
+                                <div class="h-2 bg-indigo-100 rounded mb-1 w-3/4"></div>
+                                <div class="h-2 bg-indigo-100 rounded w-1/2"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">
-                            Apakah kamu benar-benar di-bully?
-                        </h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Kadang kita bingung antara bullying dan orang yang cuma bersikap jahat sesaat. Yuk cek lewat kuis ini!
-                        </p>
-                    </div>
-                </a>
-
-                <!-- Card Quiz: Do I Bully? -->
-                <a href="{{ route('content.bullyQuiz') }}" class="block bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
-                    <div class="h-64 bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center relative overflow-hidden">
-                        <div class="absolute inset-0 bg-black bg-opacity-20"></div>
-                        <i class="fas fa-user-secret text-white text-8xl opacity-80 relative z-10"></i>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">
-                            Apakah kamu membully?
-                        </h3>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Kadang kita tidak sadar kalau perbuatan kita menyakiti orang lain. Yuk, kita introspeksi diri sejenak.
-                        </p>
-                    </div>
-                </a>
-
-
-
-
-
-
-
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Additional Resources Section -->
-    <section class="bg-gradient-to-br from-blue-50 to-indigo-50 py-16">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                    Butuh Bantuan Lebih Lanjut?
-                </h2>
-                <p class="text-lg text-gray-600 mb-8">
-                    Jika kamu mengalami bullying atau melihat temanmu di-bully, jangan ragu untuk melaporkan atau berkonsultasi dengan kami.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ Auth::user()->role == 'admin' ? route('admin.reports') : route('report.create') }}" class="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                        Laporkan Bullying
-                    </a>
-                    <a href="{{ route('consultation.index') }}" class="px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-xl hover:bg-blue-50 transition duration-300 font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                        Ruang Konsultasi
-                    </a>
+
+    <!-- Section 3: Dimana Terjadi (KIRI: Teks, KANAN: Visual) -->
+    <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <!-- KIRI: Konten Teks -->
+                <div class="md:w-1/2 space-y-6">
+                    <div class="inline-block px-4 py-2 bg-yellow-100 text-yellow-700 rounded-full font-bold text-sm uppercase tracking-wider">
+                        Lokasi
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                        Di Mana Saja <span class="text-yellow-600">Bisa Terjadi?</span>
+                    </h2>
+                    <p class="text-gray-600 text-lg">
+                        Bullying tidak memandang tempat. Kita harus selalu waspada di mana pun kita berada.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-md border border-yellow-100 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-school text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Di Sekolah</h4>
+                                <p class="text-sm text-gray-600">Kelas, koridor, kantin, lapangan, toilet.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-md border border-yellow-100 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bus text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Di Perjalanan</h4>
+                                <p class="text-sm text-gray-600">Jalan pulang/pergi sekolah, tempat nongkrong.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-md border border-yellow-100 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-wifi text-yellow-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-900 mb-1">Di Dunia Maya</h4>
+                                <p class="text-sm text-gray-600">Game online, media sosial, aplikasi chat.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KANAN: Visual -->
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-yellow-300 rounded-full blur-3xl opacity-20"></div>
+                        <div class="relative text-center space-y-6">
+                            <i class="fas fa-map-marked-alt text-9xl text-yellow-500 drop-shadow-2xl"></i>
+                            <div class="bg-white px-8 py-4 rounded-full shadow-xl inline-block border-2 border-yellow-200">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                                    <span class="text-gray-800 font-bold text-lg">Selalu Waspada!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Kuis Deteksi (KIRI: Visual, KANAN: Teks) -->
+    <section id="kuis-deteksi" class="py-16 bg-orange-50">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                <!-- Intro -->
+                <div id="deteksi-intro" class="p-8 md:p-12 quiz-container active">
+                    <div class="flex flex-col md:flex-row-reverse items-center gap-10">
+                        <!-- KANAN: Teks -->
+                        <div class="md:w-1/2 space-y-6">
+                            <div class="inline-block px-4 py-2 bg-orange-100 text-orange-700 rounded-full font-bold text-sm uppercase tracking-wider">
+                                Kuis Deteksi
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                                Apakah Aku <span class="text-orange-600">Di-bully?</span>
+                            </h2>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                Kadang kita bingung, apakah teman kita cuma sedang <span class="font-bold text-orange-600">bersikap jahat</span> sesaat, atau dia benar-benar melakukan <span class="font-bold text-red-600">bullying</span>. Ayo cari tahu lewat kuis ini!
+                            </p>
+                            <button onclick="startQuizDeteksi()" class="bg-orange-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-orange-700 transition shadow-lg transform hover:scale-105">
+                                <i class="fas fa-play-circle mr-2"></i> Mulai Kuis
+                            </button>
+                        </div>
+                        <!-- KIRI: Visual -->
+                        <div class="md:w-1/2 flex justify-center">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-orange-200 rounded-full blur-3xl opacity-30"></div>
+                                <div class="relative w-64 h-64 bg-gradient-to-br from-orange-50 to-orange-100 rounded-full flex items-center justify-center shadow-2xl border-4 border-orange-200">
+                                    <i class="fas fa-question text-9xl text-orange-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Area -->
+                <div id="deteksi-quiz" class="p-8 md:p-12 quiz-container">
+                    <div class="mb-4 flex justify-between items-center text-sm font-bold text-orange-600">
+                        <span id="deteksi-number">Pertanyaan 1 dari 10</span>
+                        <span id="deteksi-progress-text">10%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mb-12">
+                        <div id="deteksi-progress-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                    </div>
+
+                    <div class="min-h-[150px] flex items-center justify-center text-center">
+                        <h3 id="deteksi-text" class="text-2xl font-bold text-gray-800 leading-tight"></h3>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-12">
+                        <button onclick="handleDeteksiAnswer(true)" class="bg-red-500 text-white py-6 rounded-2xl font-bold text-xl hover:bg-red-600 transition shadow-md">YA</button>
+                        <button onclick="handleDeteksiAnswer(false)" class="bg-green-500 text-white py-6 rounded-2xl font-bold text-xl hover:bg-green-600 transition shadow-md">TIDAK</button>
+                    </div>
+                </div>
+
+                <!-- Result Area -->
+                <div id="deteksi-result" class="p-8 md:p-12 text-center quiz-container">
+                    <div id="deteksi-icon" class="mb-6"></div>
+                    <h2 id="deteksi-title" class="text-3xl font-bold mb-4"></h2>
+                    <div id="deteksi-description" class="text-gray-600 text-lg mb-8 leading-relaxed"></div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="{{ route('report.create') }}" id="btn-laporkan-deteksi" class="bg-orange-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-orange-700 transition shadow-lg hidden">Laporkan Sekarang</a>
+                        <button onclick="resetDeteksi()" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition">Ulangi Kuis</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Kuis Refleksi (KIRI: Teks, KANAN: Visual) -->
+    <section id="kuis-refleksi" class="py-16 bg-indigo-50">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border-t-4 border-indigo-500">
+                <!-- Intro -->
+                <div id="refleksi-intro" class="p-8 md:p-12 quiz-container active">
+                    <div class="flex flex-col md:flex-row items-center gap-10">
+                        <!-- KIRI: Teks -->
+                        <div class="md:w-1/2 space-y-6">
+                            <div class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-bold text-sm uppercase tracking-wider">
+                                Refleksi Diri
+                            </div>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+                                Apakah Aku <span class="text-indigo-600">Membully?</span>
+                            </h2>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                Kadang kita tidak sadar kalau candaan kita ternyata menyakiti hati teman lain. Mengakui kesalahan adalah langkah pertama untuk menjadi orang yang lebih baik. Yuk introspeksi diri sejenak.
+                            </p>
+                            <button onclick="startQuizRefleksi()" class="bg-indigo-600 text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-indigo-700 transition shadow-lg transform hover:scale-105">
+                                <i class="fas fa-search mr-2"></i> Mulai Refleksi
+                            </button>
+                        </div>
+                        <!-- KANAN: Visual -->
+                        <div class="md:w-1/2 flex justify-center">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-indigo-200 rounded-full blur-3xl opacity-30"></div>
+                                <div class="relative w-64 h-64 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-full flex items-center justify-center shadow-2xl border-4 border-indigo-200">
+                                    <i class="fas fa-user-secret text-9xl text-indigo-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Area -->
+                <div id="refleksi-quiz" class="p-8 md:p-12 quiz-container">
+                    <div class="mb-4 flex justify-between items-center text-sm font-bold text-indigo-600">
+                        <span id="refleksi-number">Pertanyaan 1 dari 10</span>
+                        <span id="refleksi-progress-text">10%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2 mb-12">
+                        <div id="refleksi-progress-bar" class="bg-indigo-500 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+                    </div>
+
+                    <div class="min-h-[150px] flex items-center justify-center text-center">
+                        <h3 id="refleksi-text" class="text-2xl font-bold text-gray-800 leading-tight"></h3>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mt-12">
+                        <button onclick="handleRefleksiAnswer(true)" class="bg-red-500 text-white py-6 rounded-2xl font-bold text-xl hover:bg-red-600 transition shadow-md">YA</button>
+                        <button onclick="handleRefleksiAnswer(false)" class="bg-green-500 text-white py-6 rounded-2xl font-bold text-xl hover:bg-green-600 transition shadow-md">TIDAK</button>
+                    </div>
+                </div>
+
+                <!-- Result Area -->
+                <div id="refleksi-result" class="p-8 md:p-12 text-center quiz-container">
+                    <div id="refleksi-icon" class="mb-6"></div>
+                    <h2 id="refleksi-title" class="text-3xl font-bold mb-4"></h2>
+                    <div id="refleksi-description" class="text-gray-600 text-lg mb-8 leading-relaxed"></div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a id="btn-lanjut-refleksi" href="{{ route('content.bullyReflection') }}" class="bg-red-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg hidden">Lanjut ke Pojok Refleksi</a>
+                        <button onclick="resetRefleksi()" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 transition">Ulangi Kuis</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Tips Section -->
-    <section class="container mx-auto px-4 py-16">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Tips Keamanan Online untuk Anak</h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Tips Keamanan Online untuk Kamu</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition">
                     <div class="flex items-start gap-4">
                         <div class="bg-green-100 rounded-full p-3 flex-shrink-0">
-                            <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                            </svg>
+                            <i class="fas fa-comments text-green-600"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-lg text-gray-900 mb-2">Bicara dengan Orang Dewasa</h3>
@@ -197,41 +411,32 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition">
                     <div class="flex items-start gap-4">
                         <div class="bg-blue-100 rounded-full p-3 flex-shrink-0">
-                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                            </svg>
+                            <i class="fas fa-lock text-blue-600"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-lg text-gray-900 mb-2">Jaga Privasi</h3>
-                            <p class="text-gray-600">Jangan berbagi informasi pribadi seperti alamat rumah, nomor telepon, atau nama sekolah.</p>
+                            <p class="text-gray-600">Jangan berbagi alamat rumah, nomor telepon, atau nama sekolah kepada orang yang tidak dikenal.</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition">
                     <div class="flex items-start gap-4">
                         <div class="bg-purple-100 rounded-full p-3 flex-shrink-0">
-                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-                            </svg>
+                            <i class="fas fa-brain text-purple-600"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-lg text-gray-900 mb-2">Berpikir Sebelum Posting</h3>
-                            <p class="text-gray-600">Pikirkan baik-baik sebelum membagikan foto atau menulis sesuatu online.</p>
+                            <p class="text-gray-600">Pikirkan baik-baik sebelum membagikan foto atau menulis sesuatu di internet.</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition">
+                <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition">
                     <div class="flex items-start gap-4">
                         <div class="bg-red-100 rounded-full p-3 flex-shrink-0">
-                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
-                            </svg>
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-lg text-gray-900 mb-2">Laporkan Konten Buruk</h3>
@@ -242,17 +447,150 @@
             </div>
         </div>
     </section>
+@endsection
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 mt-16">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-400">&copy; 2024 StopBullying. Platform Pengaduan Bullying yang Aman dan Terpercaya.</p>
-            <div class="mt-4 space-x-4">
-                <span class="text-gray-400">Selamat datang, {{ Auth::user()->role == 'admin' ? 'Guru' : 'Pengguna' }}!</span>
-                <span class="text-gray-600">|</span>
-                <a href="{{ route('logout') }}" class="text-gray-400 hover:text-white transition">Logout</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+@section('scripts')
+<script>
+    // --- KUIS DETEKSI (APAKAH AKU DI-BULLY) ---
+    const deteksiQuestions = [
+        "Apakah orang tersebut menyakitimu lebih dari satu kali?",
+        "Apakah kamu merasa orang itu lebih kuat atau punya kekuasaan lebih darimu?",
+        "Apakah orang tersebut sengaja ingin membuatmu sedih atau marah?",
+        "Apakah kamu merasa takut untuk bertemu orang tersebut?",
+        "Apakah orang itu mengajak teman-teman lain untuk menjauhimu?",
+        "Apakah orang itu tetap melakukannya meskipun kamu sudah memintanya berhenti?",
+        "Apakah kamu merasa tidak berdaya untuk melawan atau menghentikannya?",
+        "Apakah orang itu mengejek fisikmu atau namamu berkali-kali?",
+        "Apakah orang itu merusak atau mengambil barang-barangmu dengan sengaja?",
+        "Apakah hal ini membuatmu jadi tidak ingin pergi ke sekolah atau bermain?"
+    ];
+
+    let deteksiCurrent = 0;
+    let deteksiScore = 0;
+
+    function startQuizDeteksi() {
+        document.getElementById('deteksi-intro').classList.remove('active');
+        document.getElementById('deteksi-quiz').classList.add('active');
+        showDeteksiQuestion();
+    }
+
+    function showDeteksiQuestion() {
+        document.getElementById('deteksi-text').innerText = deteksiQuestions[deteksiCurrent];
+        document.getElementById('deteksi-number').innerText = `Pertanyaan ${deteksiCurrent + 1} dari ${deteksiQuestions.length}`;
+        const prog = ((deteksiCurrent + 1) / deteksiQuestions.length) * 100;
+        document.getElementById('deteksi-progress-bar').style.width = `${prog}%`;
+        document.getElementById('deteksi-progress-text').innerText = `${prog}%`;
+    }
+
+    function handleDeteksiAnswer(ans) {
+        if(ans) deteksiScore++;
+        deteksiCurrent++;
+        if(deteksiCurrent < deteksiQuestions.length) {
+            showDeteksiQuestion();
+        } else {
+            showDeteksiResult();
+        }
+    }
+
+    function showDeteksiResult() {
+        document.getElementById('deteksi-quiz').classList.remove('active');
+        document.getElementById('deteksi-result').classList.add('active');
+        const icon = document.getElementById('deteksi-icon');
+        const title = document.getElementById('deteksi-title');
+        const desc = document.getElementById('deteksi-description');
+        const btn = document.getElementById('btn-laporkan-deteksi');
+
+        if(deteksiScore >= 7) {
+            icon.innerHTML = '<div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600"><i class="fas fa-exclamation-circle text-5xl"></i></div>';
+            title.innerText = "Terindikasi Bullying";
+            title.className = "text-3xl font-bold mb-4 text-red-600";
+            desc.innerHTML = `Kamu menjawab <strong>${deteksiScore} dari 10</strong> pertanyaan dengan "YA". <br><br> Ini menunjukkan bahwa apa yang kamu alami kemungkinan besar adalah bullying. Jangan takut, kamu tidak sendirian. Sebaiknya kamu segera melapor atau bercerita ke orang dewasa yang kamu percaya.`;
+            btn.classList.remove('hidden');
+        } else {
+            icon.innerHTML = '<div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600"><i class="fas fa-check-circle text-5xl"></i></div>';
+            title.innerText = "Bukan Bullying (Mungkin Hanya Bersikap Buruk)";
+            title.className = "text-3xl font-bold mb-4 text-green-600";
+            desc.innerHTML = `Kamu menjawab <strong>${deteksiScore} dari 10</strong> pertanyaan dengan "YA". <br><br> Sepertinya orang tersebut hanya sedang bersikap tidak baik atau jahat padamu saat ini (tidak terus-menerus). Cobalah untuk membicarakannya baik-baik atau tetap bercerita ke orang tua atau guru ya!`;
+            btn.classList.add('hidden');
+        }
+    }
+
+    function resetDeteksi() {
+        deteksiCurrent = 0;
+        deteksiScore = 0;
+        document.getElementById('deteksi-result').classList.remove('active');
+        document.getElementById('deteksi-intro').classList.add('active');
+    }
+
+    // --- KUIS REFLEKSI (APAKAH AKU MEMBULLY) ---
+    const refleksiQuestions = [
+        "Apakah kamu sengaja mengejek teman agar teman-teman lain tertawa?",
+        "Apakah kamu sering memanggil teman dengan nama yang dia tidak sukai?",
+        "Apakah kamu pernah menyebarkan cerita bohong tentang temanmu?",
+        "Apakah kamu pernah melarang teman lain untuk berteman dengan seseorang?",
+        "Apakah kamu merasa senang ketika melihat temanmu merasa takut atau sedih?",
+        "Apakah kamu pernah mengambil atau menyembunyikan barang teman tanpa ijin agar dia bingung?",
+        "Apakah kamu pernah mengancam akan menyakiti teman jika dia tidak menuruti maumu?",
+        "Apakah kamu sengaja meninggalkan atau mengeluarkan teman dari grup bermain/obrolan?",
+        "Apakah kamu merasa lebih hebat ketika berhasil membuat seseorang menangis?",
+        "Apakah kamu tetap melakukan hal yang mengganggu teman meskipun dia sudah minta berhenti?"
+    ];
+
+    let refleksiCurrent = 0;
+    let refleksiScore = 0;
+
+    function startQuizRefleksi() {
+        document.getElementById('refleksi-intro').classList.remove('active');
+        document.getElementById('refleksi-quiz').classList.add('active');
+        showRefleksiQuestion();
+    }
+
+    function showRefleksiQuestion() {
+        document.getElementById('refleksi-text').innerText = refleksiQuestions[refleksiCurrent];
+        document.getElementById('refleksi-number').innerText = `Pertanyaan ${refleksiCurrent + 1} dari ${refleksiQuestions.length}`;
+        const prog = ((refleksiCurrent + 1) / refleksiQuestions.length) * 100;
+        document.getElementById('refleksi-progress-bar').style.width = `${prog}%`;
+        document.getElementById('refleksi-progress-text').innerText = `${prog}%`;
+    }
+
+    function handleRefleksiAnswer(ans) {
+        if(ans) refleksiScore++;
+        refleksiCurrent++;
+        if(refleksiCurrent < refleksiQuestions.length) {
+            showRefleksiQuestion();
+        } else {
+            showRefleksiResult();
+        }
+    }
+
+    function showRefleksiResult() {
+        document.getElementById('refleksi-quiz').classList.remove('active');
+        document.getElementById('refleksi-result').classList.add('active');
+        const icon = document.getElementById('refleksi-icon');
+        const title = document.getElementById('refleksi-title');
+        const desc = document.getElementById('refleksi-description');
+        const btn = document.getElementById('btn-lanjut-refleksi');
+
+        if(refleksiScore >= 8) {
+            icon.innerHTML = '<div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto text-red-600"><i class="fas fa-heart-broken text-5xl"></i></div>';
+            title.innerText = "Hati-hati, Kamu Membully";
+            title.className = "text-3xl font-bold mb-4 text-red-600";
+            desc.innerHTML = `Kamu menjawab <strong>${refleksiScore} dari 10</strong> pertanyaan dengan "YA". <br><br> Ini menunjukkan bahwa perbuatanmu sudah termasuk tindakan bullying. Yuk berhenti sekarang sebelum temanmu semakin terluka. Mengakui kesalahan adalah awal kebaikan.`;
+            btn.classList.remove('hidden');
+        } else {
+            icon.innerHTML = '<div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600"><i class="fas fa-heart text-5xl"></i></div>';
+            title.innerText = "Teruslah Bersikap Baik!";
+            title.className = "text-3xl font-bold mb-4 text-green-600";
+            desc.innerHTML = `Kamu menjawab <strong>${refleksiScore} dari 10</strong> pertanyaan dengan "YA". <br><br> Sepertinya kamu bukan pembully. Tetaplah menjadi teman yang baik, saling menolong, dan sayangi sesama ya!`;
+            btn.classList.add('hidden');
+        }
+    }
+
+    function resetRefleksi() {
+        refleksiCurrent = 0;
+        refleksiScore = 0;
+        document.getElementById('refleksi-result').classList.remove('active');
+        document.getElementById('refleksi-intro').classList.add('active');
+    }
+</script>
+@endsection

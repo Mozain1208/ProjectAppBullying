@@ -58,11 +58,18 @@
                             <form action="{{ route('admin.report.status', $report->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('PATCH')
-                                <select onchange="this.form.submit()" name="status" class="text-xs border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-lg focus:ring-blue-500">
+                                <select onchange="this.form.submit()" name="status" class="text-xs border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-lg focus:ring-blue-500 mr-2">
                                     <option value="pending" {{ $report->status == 'pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="process" {{ $report->status == 'process' ? 'selected' : '' }}>Proses</option>
                                     <option value="resolved" {{ $report->status == 'resolved' ? 'selected' : '' }}>Selesai</option>
                                 </select>
+                            </form>
+                            <form action="{{ route('admin.report.delete', $report->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini secara permanen? Tindakan ini tidak dapat dibatalkan.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700 transition" title="Hapus Laporan">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>

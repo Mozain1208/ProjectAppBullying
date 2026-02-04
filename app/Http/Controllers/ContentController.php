@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 
 class ContentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // Constructor removed to allow public access to content pages
+
 
     /**
      * Show children page (5-12 years)

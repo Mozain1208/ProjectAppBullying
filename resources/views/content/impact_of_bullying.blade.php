@@ -9,23 +9,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .hero-gradient {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('images/remaja_bg.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body class="bg-gray-50">
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition font-bold">
+            <a href="{{ route('home') }}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition font-bold">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
             <span class="font-bold text-xl text-gray-800">StopBullying</span>
         </div>
     </nav>
 
-    <header class="bg-gradient-to-r from-purple-600 to-pink-500 py-20 text-center text-white">
+    <header class="hero-gradient py-20 text-center text-white">
         <div class="container mx-auto px-4">
-            <i class="fas fa-heart-broken text-6xl mb-6 opacity-80"></i>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Dampak Serius Bullying</h1>
-            <p class="text-xl max-w-2xl mx-auto opacity-90">Bullying bukan bagian dari "tumbuh dewasa". Dampaknya bisa bertahan seumur hidup.</p>
+            <i class="fas fa-heart-broken text-6xl mb-6 opacity-80 drop-shadow-lg"></i>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-shadow">Dampak Serius Bullying</h1>
+            <p class="text-xl max-w-2xl mx-auto text-shadow font-medium">Bullying bukan bagian dari "tumbuh dewasa". Dampaknya bisa bertahan seumur hidup.</p>
         </div>
     </header>
 

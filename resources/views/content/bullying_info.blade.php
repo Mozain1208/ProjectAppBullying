@@ -12,8 +12,13 @@
             font-family: 'Inter', sans-serif;
         }
         .hero-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('{{ asset('images/anak_bg.jpg') }}') !important;
+            background-color: #1e3a8a !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
         }
+        .text-shadow { text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .info-card {
             transition: all 0.3s ease;
         }
@@ -52,8 +57,8 @@
             </svg>
         </div>
         <div class="container mx-auto px-4 text-center relative z-10">
-            <h1 class="text-4xl md:text-5xl font-bold mb-6">Mengenal Apa Itu Bullying</h1>
-            <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-6 text-shadow">Mengenal Apa Itu Bullying</h1>
+            <p class="text-xl text-white max-w-2xl mx-auto text-shadow font-medium">
                 Halo teman-teman! Yuk, kita belajar bersama tentang apa itu bullying dan bagaimana kita bisa saling menyayangi.
             </p>
         </div>

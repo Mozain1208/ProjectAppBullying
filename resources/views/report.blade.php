@@ -3,6 +3,7 @@
 @section('title', 'Laporkan Bullying - StopBullying')
 
 @section('styles')
+<style>
 .dashboard-card {
     border-radius: 1rem;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
@@ -49,12 +50,13 @@
     color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+</style>
 @endsection
 
 @section('content')
-<!-- Main Content -->
+
 <div class="container mx-auto px-4 py-12">
-    <!-- Page Header -->
+    
     <div class="mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Laporkan Bullying</h1>
         <p class="text-gray-600">Laporkan kejadian bullying dengan aman dan terpercaya. Identitas Anda akan dilindungi.</p>
@@ -76,7 +78,7 @@
         </div>
     @endif
 
-    <!-- Stats Cards with Different Colors -->
+    
     <div class="grid md:grid-cols-3 gap-6 mb-8">
         <div class="stat-card" style="background: linear-gradient(135deg, #5B8DEF 0%, #6B9DF1 100%);">
             <div class="flex items-center justify-between">
@@ -118,7 +120,7 @@
         </div>
     </div>
 
-    <!-- Form Section -->
+   
     <form method="POST" action="{{ route('report.store') }}" enctype="multipart/form-data" class="space-y-6">
         @csrf
         
@@ -132,14 +134,15 @@
             <div class="space-y-3">
                 @php
                     $categories = explode(',', $site_settings['bullying_categories'] ?? 'verbal,fisik,sosial,cyberbullying');
-                    $icons = ['verbal' => 'fa-comment-dots', 'fisik' => 'fa-hand-rock', 'sosial' => 'fa-user-slash', 'cyberbullying' => 'fa-globe'];
-                    $colors = ['verbal' => 'red', 'fisik' => 'orange', 'sosial' => 'purple', 'cyberbullying' => 'blue'];
+                    $icons = ['verbal' => 'fa-comment-dots', 'fisik' => 'fa-hand-rock', 'sosial' => 'fa-user-slash', 'sosial/relasional' => 'fa-user-slash', 'cyberbullying' => 'fa-globe'];
+                    $colors = ['verbal' => 'red', 'fisik' => 'orange', 'sosial' => 'purple', 'sosial/relasional' => 'purple', 'cyberbullying' => 'blue'];
                 @endphp
                 @foreach($categories as $category)
                     @php 
                         $catClean = trim($category);
-                        $icon = $icons[$catClean] ?? 'fa-exclamation-circle';
-                        $color = $colors[$catClean] ?? 'gray';
+                        $catLower = strtolower($catClean);
+                        $icon = $icons[$catLower] ?? 'fa-exclamation-circle';
+                        $color = $colors[$catLower] ?? 'gray';
                     @endphp
                     <label class="flex items-start p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all bullying-option {{ old('bullying_type') == $catClean ? 'border-blue-500 bg-blue-50' : '' }}">
                         <input type="radio" name="bullying_type" value="{{ $catClean }}" class="mt-1 w-5 h-5 text-blue-600" required {{ old('bullying_type') == $catClean ? 'checked' : '' }}>
@@ -160,7 +163,7 @@
         </div>
 
 
-        <!-- Identity Section -->
+        
         <div class="dashboard-card p-6 bg-gradient-to-br from-white to-indigo-50">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-id-card text-indigo-600 mr-2"></i>
@@ -208,7 +211,7 @@
             </div>
         </div>
 
-        <!-- Report Details -->
+        
         <div class="dashboard-card p-6 bg-gradient-to-br from-white to-blue-50">
             <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-file-alt text-blue-600 mr-2"></i>
@@ -320,11 +323,11 @@
             </div>
             
             <div id="file-list" class="mt-4 space-y-2 hidden">
-                <!-- Preview file list will be here -->
+               
             </div>
         </div>
 
-        <!-- Privacy Options -->
+        
         <div class="dashboard-card p-6 bg-gradient-to-br from-white to-purple-50">
             <div class="flex items-start">
                 <input 
@@ -343,7 +346,7 @@
             </div>
         </div>
 
-        <!-- Submit Button -->
+       
         <div class="flex justify-end space-x-4">
             <a href="{{ route('dashboard') }}" class="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition duration-200">
                 Batal
@@ -364,7 +367,7 @@
 <script>
     console.log('=== REPORT FORM SCRIPT LOADED ===');
     
-    // 1. ANONYMITY & NAME REQUIREMENT
+    
     const anonymousCheckbox = document.getElementById('anonymous');
     const reporterNameInput = document.getElementById('reporter_name');
     const nameRequiredIndicator = document.getElementById('name_required_indicator');
@@ -387,10 +390,10 @@
     }
 
     anonymousCheckbox.addEventListener('change', toggleNameRequirement);
-    toggleNameRequirement(); // Initial state
+    toggleNameRequirement(); 
 
 
-    // 2. TIME FORMAT 24H (HH:MM)
+    
     const hourInput = document.getElementById('incident_hour');
     const minuteInput = document.getElementById('incident_minute');
     const hiddenTimeInput = document.getElementById('incident_time');
@@ -418,7 +421,7 @@
     });
 
 
-    // 3. DATE & TIME RESTRICTIONS (REAL-TIME)
+    
     const incidentDateInput = document.getElementById('incident_date');
 
     function getLocalNow() {
@@ -430,7 +433,7 @@
         };
     }
 
-    // Set max date for calendar
+    
     function updateDateLimit() {
         const now = getLocalNow();
         incidentDateInput.max = now.date;
@@ -444,12 +447,12 @@
         const hh = hourInput.value !== "" ? parseInt(hourInput.value) : null;
         const mm = minuteInput.value !== "" ? parseInt(minuteInput.value) : null;
 
-        // Reset visual errors
+        
         hourInput.classList.remove('border-red-500', 'bg-red-50');
         minuteInput.classList.remove('border-red-500', 'bg-red-50');
 
         if (selectedDate === now.date) {
-            // If today, set max for browser logic (affects arrows, but allows typing)
+            
             hourInput.max = now.hour;
             
             if (hh !== null && hh === now.hour) {
@@ -458,21 +461,21 @@
                 minuteInput.max = 59;
             }
 
-            // check for invalid input (future time)
+            
             if (hh !== null && (hh > now.hour || (hh === now.hour && mm !== null && mm > now.minute))) {
-                // Show visual error but DONT change the value (prevents cursor jumping)
+                
                 hourInput.classList.add('border-red-500', 'bg-red-50');
                 if (mm !== null && mm > now.minute && hh === now.hour) {
                     minuteInput.classList.add('border-red-500', 'bg-red-50');
                 }
             }
         } else {
-            // For past dates, anything goes (within 0-23 and 0-59)
+          
             hourInput.max = 23;
             minuteInput.max = 59;
         }
 
-        // Update hidden input for backend
+      
         if (hourInput.value !== "" && minuteInput.value !== "") {
             hiddenTimeInput.value = `${hourInput.value.padStart(2, '0')}:${minuteInput.value.padStart(2, '0')}`;
         } else {
@@ -480,7 +483,7 @@
         }
     }
 
-    // Update limit every minute to stay truly real-time
+
     setInterval(updateDateLimit, 60000);
 
     incidentDateInput.addEventListener('change', validateDateTime);
@@ -488,7 +491,7 @@
     minuteInput.addEventListener('input', validateDateTime);
 
 
-    // 4. DRAG & DROP EVIDENCE (ADDITIVE)
+    
     const dropZone = document.getElementById('drop-zone');
     const uploadButton = document.getElementById('upload-button');
     const fileInput = document.getElementById('evidence');
@@ -503,9 +506,8 @@
         uploadIcon: !!uploadIcon
     });
     
-    let allFiles = []; // Global array to store all selected files
+    let allFiles = []; 
 
-    // Handle button click to trigger file input
     if (uploadButton && fileInput) {
         uploadButton.addEventListener('click', function(e) {
             e.preventDefault();
@@ -569,7 +571,7 @@
                 return;
             }
 
-            // Check for duplicates
+           
             const isDuplicate = allFiles.some(f => f.name === file.name && f.size === file.size && f.lastModified === file.lastModified);
             if (!isDuplicate) {
                 allFiles.push(file);
@@ -594,7 +596,7 @@
 
         const btnText = document.getElementById('upload-btn-text');
 
-        // UI Feedback Icon
+        
         if (allFiles.length > 0) {
             uploadIcon.className = 'fas fa-check-circle text-6xl text-green-500 mb-4';
             if (btnText) btnText.innerText = `${allFiles.length} File Terpilih`;
@@ -642,7 +644,7 @@
     }
 
 
-    // 5. FORM SUBMISSION
+   
     document.querySelector('form').addEventListener('submit', function(e) {
         updateHiddenTime();
         if (!hiddenTimeInput.value) {
@@ -668,14 +670,14 @@
         }
     });
 
-    // Bullying type selection - simple and reliable
+    
     document.querySelectorAll('input[name="bullying_type"]').forEach(radio => {
         radio.addEventListener('change', function() {
-            // Remove selected class from all options
+           
             document.querySelectorAll('.bullying-option').forEach(option => {
                 option.classList.remove('border-blue-500', 'bg-blue-50');
             });
-            // Add selected class to the chosen option
+            
             if (this.checked) {
                 this.closest('.bullying-option').classList.add('border-blue-500', 'bg-blue-50');
             }

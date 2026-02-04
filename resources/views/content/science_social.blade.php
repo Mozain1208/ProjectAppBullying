@@ -14,7 +14,7 @@
 <body class="bg-gray-50">
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition font-bold">
+            <a href="{{ route('home') }}" class="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition font-bold">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
             <span class="font-bold text-xl text-gray-800">StopBullying</span>

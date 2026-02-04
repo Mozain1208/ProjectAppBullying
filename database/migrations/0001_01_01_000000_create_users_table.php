@@ -6,21 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username')->unique();
-            $table->string('nis')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['user', 'admin'])->default('user');
-            $table->enum('age_category', ['child', 'teen', 'adult'])->nullable();
-            $table->enum('status', ['active', 'banned'])->default('active');
+            $table->string('account_status')->default('active'); // active, banned
+            $table->integer('warning_count')->default(0);
+            $table->timestamp('banned_until')->nullable();
+            $table->json('restricted_features')->nullable();
+            $table->string('risk_level')->default('low'); // low, medium, high
+            $table->text('admin_notes')->nullable();
+            $table->text('last_block_reason')->nullable();
+            $table->integer('age')->nullable();
             $table->integer('trust_score')->default(100);
             $table->rememberToken();
             $table->timestamps();
@@ -42,9 +44,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

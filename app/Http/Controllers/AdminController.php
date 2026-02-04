@@ -8,6 +8,8 @@ use App\Models\Consultation;
 use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -41,7 +43,55 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recent_reports', 'recent_consultations'));
+        // Get counts for each bullying type for the chart
+        $bullying_types_stats = Report::select('bullying_type', DB::raw('count(*) as total'))
+            ->groupBy('bullying_type')
+            ->pluck('total', 'bullying_type')
+            ->toArray();
+
+        // Get actual categories from settings to ensure they all show up in the chart
+        $settings = \App\Models\SiteSetting::all()->pluck('setting_value', 'setting_key');
+        $rawCategories = explode(',', $settings['bullying_categories'] ?? 'verbal,fisik,sosial,cyberbullying');
+        $common_types = array_map(function($cat) {
+            return strtolower(trim($cat));
+        }, $rawCategories);
+
+        foreach ($common_types as $type) {
+            if (!isset($bullying_types_stats[$type])) {
+                $bullying_types_stats[$type] = 0;
+            }
+        }
+
+        // Get counts for monthly trend
+        $currentYear = date('Y');
+        if (config('database.default') === 'sqlite') {
+            $monthly_stats = Report::select(
+                DB::raw('strftime("%m", created_at) as month'),
+                DB::raw('count(*) as total')
+            )
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+        } else {
+            $monthly_stats = Report::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('count(*) as total')
+            )
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+        }
+
+        $trend_data = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $m = str_pad($i, 2, '0', STR_PAD_LEFT);
+            // Handle both string '01' and integer 1 keys
+            $trend_data[] = $monthly_stats[$m] ?? ($monthly_stats[$i] ?? 0);
+        }
+
+        return view('admin.dashboard', compact('stats', 'recent_reports', 'recent_consultations', 'bullying_types_stats', 'trend_data'));
     }
 
     public function reports()
@@ -277,5 +327,23 @@ class AdminController extends Controller
         AuditLog::log($logAction, array_merge($details, ['reason' => $request->reason]), $user->id);
 
         return back()->with('success', 'Status pengguna berhasil diperbarui.');
+    }
+    public function deleteReport($id)
+    {
+        $report = Report::with('evidences')->findOrFail($id);
+        
+        // Delete evidence files
+        foreach ($report->evidences as $evidence) {
+            if (Storage::disk('public')->exists($evidence->file_path)) {
+                Storage::disk('public')->delete($evidence->file_path);
+            }
+        }
+
+        $reportId = $report->id;
+        $report->delete();
+
+        AuditLog::log('Hapus Laporan', ['report_id' => $reportId]);
+
+        return redirect()->route('admin.reports')->with('success', 'Laporan berhasil dihapus secara permanen.');
     }
 }

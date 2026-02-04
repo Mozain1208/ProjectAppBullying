@@ -60,6 +60,14 @@ class Report extends Model
     }
 
     /**
+     * Get handlings timeline for this report
+     */
+    public function handlings()
+    {
+        return $this->hasMany(ReportHandling::class)->latest();
+    }
+
+    /**
      * Scope for resolved reports
      */
     public function scopeResolved($query)

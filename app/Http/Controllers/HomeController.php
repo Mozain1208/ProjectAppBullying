@@ -13,11 +13,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Redirect to dashboard if user is already logged in
-        if (Auth::check()) {
-            return redirect()->route('dashboard');
-        }
-
         return view('index');
     }
 }

@@ -1,162 +1,131 @@
+@extends('layouts.app')
 
+@section('title', 'Selamat Datang di StopBullying - SMK Mandiri Bersemi')
 
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Pengaduan Bullying</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 transition-colors duration-300">
-    <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50 transition-colors duration-300">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <div class="w-12 h-12 flex items-center justify-center overflow-hidden">
-                        <img src="{{ asset('images/logo-smk.png') }}" alt="Logo SMK Mandiri Bersemi" class="w-full h-full object-contain">
-                    </div>
-                    <span class="text-xl font-bold text-gray-800 dark:text-white">{{ $site_settings['school_name'] ?? 'StopBullying' }}</span>
-                </div>
-
-                <!-- Navigation Menu -->
-                <nav class="hidden lg:flex items-center space-x-6">
-                    <a href="{{ route('home') }}" class="text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-600 dark:border-blue-400">Home</a>
-                    <a href="{{ route('content.children') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Anak (5-12 tahun)</a>
-                    <a href="{{ route('content.teens') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Remaja (13-17 tahun)</a>
-                    <a href="{{ route('content.adults') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Dewasa</a>
-                    <a href="{{ route('report.create') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Laporkan Bullying</a>
-                    <a href="{{ route('consultation.index') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition font-medium">Ruang Konsultasi</a>
-                </nav>
-
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('register') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
-                        Register
-                    </a>
-                    <a href="{{ route('login') }}" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
-                        Login
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
+@section('content')
     <!-- Hero Section -->
     <section class="container mx-auto px-4 py-16">
         <div class="grid md:grid-cols-2 gap-12 items-center">
             <div>
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                    Tahukah Kamu<br>Apa Itu Bullying?
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                    Hentikan <span class="text-blue-600">Bullying</span>,<br>Mulai Menyayangi.
                 </h1>
-                <p class="text-lg text-gray-600 mb-8">
-                    Bullying adalah tindakan agresif yang dilakukan secara berulang terhadap seseorang yang lebih lemah atau tidak berdaya.
+                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Selamat datang di platform StopBullying SMK Mandiri Bersemi. Kami menyediakan wadah yang aman untuk belajar, berkonsultasi, dan melaporkan tindakan perundungan demi masa depan yang lebih baik.
                 </p>
-                <a href="{{ route('login') }}" class="inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
-                    Laporkan Sekarang
-                </a>
+                <div class="flex flex-wrap gap-4">
+                    @auth
+                        <a href="{{ Auth::user()->role == 'admin' ? route('admin.reports') : route('report.create') }}" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-300 font-bold shadow-lg shadow-blue-200">
+                            {{ Auth::user()->role == 'admin' ? 'Kelola Laporan' : 'Laporkan Sekarang' }}
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="inline-block px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-300 font-bold shadow-lg shadow-blue-200">
+                            Laporkan Sekarang
+                        </a>
+                    @endauth
+                    <a href="#info-section" class="inline-block px-8 py-4 bg-white text-blue-600 border-2 border-blue-600 rounded-xl hover:bg-blue-50 transition duration-300 font-bold">
+                        Pelajari Dulu
+                    </a>
+                </div>
             </div>
-            <div class="rounded-2xl overflow-hidden shadow-xl aspect-[4/3] flex items-center justify-center">
-                <img src="{{ asset('images/learning_susi.jpg') }}" alt="Learning Susi" class="w-full h-full object-cover">
+            <div class="rounded-3xl overflow-hidden shadow-2xl skew-y-1 transform hover:skew-y-0 transition duration-500 aspect-[4/3]">
+                <img src="{{ asset('images/learning_susi.jpg') }}" alt="Learning" class="w-full h-full object-cover">
             </div>
         </div>
     </section>
 
-    <!-- Information Cards -->
-    <section class="container mx-auto px-4 py-12">
+    <!-- Information Section -->
+    <section id="info-section" class="container mx-auto px-4 py-16">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Mari Belajar Bersama</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Kami menyediakan berbagai informasi edukatif untuk anak, remaja, maupun orang tua agar lebih paham tentang bahaya dan pencegahan bullying.</p>
+        </div>
+
         <div class="grid md:grid-cols-3 gap-8">
-            <!-- Card 1: Apa itu Bullying -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <div class="h-48 overflow-hidden">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-500 border border-gray-100 p-2">
+                <div class="h-48 rounded-xl overflow-hidden mb-6">
                     <img src="{{ asset('images/apa-itu-bullying.jpg') }}" alt="Apa itu Bullying" class="w-full h-full object-cover">
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Apa itu Bullying?</h3>
-                    <p class="text-gray-600 mb-4">Pelajari definisi dan karakteristik dari tindakan bullying</p>
-                    <a href="{{ route('login') }}" class="inline-block px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition duration-200 text-sm font-medium">
-                        Selengkapnya
-                    </a>
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Definisi Bullying</h3>
+                    <p class="text-gray-600 text-sm mb-6">Pahami apa yang dimaksud dengan bullying dan mengapa hal ini tidak boleh dibiarkan begitu saja.</p>
+                    <a href="{{ route('content.whatIsBullying') }}" class="block text-center py-3 bg-gray-50 text-gray-800 rounded-lg hover:bg-blue-600 hover:text-white transition font-bold">Baca Selengkapnya</a>
                 </div>
             </div>
 
-            <!-- Card 2: Jenis Bullying -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <div class="h-48 overflow-hidden">
+            <!-- Card 2 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-500 border border-gray-100 p-2">
+                <div class="h-48 rounded-xl overflow-hidden mb-6">
                     <img src="{{ asset('images/jenis-bullying.jpg') }}" alt="Jenis Bullying" class="w-full h-full object-cover">
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Jenis Bullying</h3>
-                    <p class="text-gray-600 mb-4">Kenali berbagai jenis dan bentuk tindakan bullying</p>
-                    <a href="{{ route('login') }}" class="inline-block px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition duration-200 text-sm font-medium">
-                        Selengkapnya
-                    </a>
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Kenali Jenisnya</h3>
+                    <p class="text-gray-600 text-sm mb-6">Bullying bukan cuma soal fisik. Ada verbal, sosial, hingga cyberbullying yang sering terjadi di dunia maya.</p>
+                    <a href="{{ route('content.typesOfBullying') }}" class="block text-center py-3 bg-gray-50 text-gray-800 rounded-lg hover:bg-blue-600 hover:text-white transition font-bold">Baca Selengkapnya</a>
                 </div>
             </div>
 
-            <!-- Card 3: Dampak Bullying -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-                <div class="h-48 overflow-hidden">
+            <!-- Card 3 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition duration-500 border border-gray-100 p-2">
+                <div class="h-48 rounded-xl overflow-hidden mb-6">
                     <img src="{{ asset('images/dampak-bullying.jpg') }}" alt="Dampak Bullying" class="w-full h-full object-cover">
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-3">Dampak Bullying</h3>
-                    <p class="text-gray-600 mb-4">Pahami dampak serius dari tindakan bullying</p>
-                    <a href="{{ route('login') }}" class="inline-block px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition duration-200 text-sm font-medium">
-                        Selengkapnya
-                    </a>
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Dampak Bahaya</h3>
+                    <p class="text-gray-600 text-sm mb-6">Dampak bullying bisa membekas seumur hidup. Mari cegah sebelum terlambat demi kesehatan mental kita.</p>
+                    <a href="{{ route('content.impactOfBullying') }}" class="block text-center py-3 bg-gray-50 text-gray-800 rounded-lg hover:bg-blue-600 hover:text-white transition font-bold">Baca Selengkapnya</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Stats Section -->
     <!-- Pojok Ilmu Section -->
-    <section class="bg-white py-16 mt-12">
+    <section class="bg-blue-50 py-16 mt-12">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4">Pojok Ilmu</h2>
-            <p class="text-center text-gray-600 mb-12">Temukan berbagai ilmu dan pengetahuan tentang bullying dari berbagai aspek ilmiah</p>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Pojok Ilmu</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Temukan berbagai pengetahuan tentang bullying dari berbagai perspektif ilmiah untuk pemahaman yang lebih dalam.</p>
+            </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                <a href="{{ route('login') }}" class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-6 text-center hover:from-blue-600 hover:to-blue-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <div class="text-4xl mb-3">🧬</div>
-                    <h3 class="text-xl font-bold">Biologi</h3>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                <a href="{{ route('content.scienceBiology') }}" class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition duration-300 transform hover:-translate-y-1 border border-blue-100">
+                    <div class="mb-4 flex justify-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center p-3">
+                            <img src="{{ asset('images/icons/biologi.png') }}" alt="Biologi" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Biologi</h3>
                 </a>
 
-                <a href="{{ route('login') }}" class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-6 text-center hover:from-purple-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <div class="text-4xl mb-3">🧠</div>
-                    <h3 class="text-xl font-bold">Psikologi</h3>
+                <a href="{{ route('content.sciencePsychology') }}" class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition duration-300 transform hover:-translate-y-1 border border-purple-100">
+                    <div class="mb-4 flex justify-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center p-3">
+                            <img src="{{ asset('images/icons/psikologi.png') }}" alt="Psikologi" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Psikologi</h3>
                 </a>
 
-                <a href="{{ route('login') }}" class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-6 text-center hover:from-green-600 hover:to-green-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <div class="text-4xl mb-3">👥</div>
-                    <h3 class="text-xl font-bold">Sosial</h3>
+                <a href="{{ route('content.scienceSocial') }}" class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition duration-300 transform hover:-translate-y-1 border border-green-100">
+                    <div class="mb-4 flex justify-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center p-3">
+                            <img src="{{ asset('images/icons/sosial.png') }}" alt="Sosial" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Sosial</h3>
                 </a>
 
-                <a href="{{ route('login') }}" class="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-xl p-6 text-center hover:from-amber-600 hover:to-amber-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                    <div class="text-4xl mb-3">✨</div>
-                    <h3 class="text-xl font-bold">Spiritual</h3>
+                <a href="{{ route('content.scienceSpiritual') }}" class="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition duration-300 transform hover:-translate-y-1 border border-amber-100">
+                    <div class="mb-4 flex justify-center">
+                        <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center p-3">
+                            <img src="{{ asset('images/icons/spiritual.png') }}" alt="Spiritual" class="w-full h-full object-contain">
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Spiritual</h3>
                 </a>
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-8 mt-16">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-400">&copy; 2024 StopBullying. Platform Pengaduan Bullying yang Aman dan Terpercaya.</p>
-            <div class="mt-4 space-x-4">
-                <a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition">Login</a>
-                <span class="text-gray-600">|</span>
-                <a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition">Register</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+@endsection
