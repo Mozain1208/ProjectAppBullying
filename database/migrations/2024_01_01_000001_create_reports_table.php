@@ -11,15 +11,32 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('victim_name');
-            $table->string('perpetrator_name');
-            $table->string('bullying_type'); // Verbal, Fisik, Sosial, Cyber
-            $table->date('incident_date');
-            $table->string('incident_location');
-            $table->text('description');
-            $table->enum('status', ['pending', 'investigating', 'resolved', 'dismissed'])->default('pending');
+            
+            // Reporter Information
+            $table->string('reporter_name')->nullable();
+            $table->integer('reporter_age')->nullable();
+            $table->string('reporter_role')->default('korban'); // korban, saksi
+            
+            // Incident Details
+            $table->string('victim_name')->nullable();
+            $table->string('perpetrator_name')->nullable();
+            $table->string('bullying_type'); // verbal, fisik, sosial, cyber
+            $table->dateTime('incident_time')->nullable();
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
+            
+            // Legacy fields (for backward compatibility)
+            $table->date('incident_date')->nullable();
+            $table->string('incident_location')->nullable();
+            
+            // Status and Admin
+            $table->string('status')->default('pending'); // pending, process, investigating, resolved, dismissed
             $table->text('admin_notes')->nullable();
+            
+            // Privacy
+            $table->boolean('anonymous')->default(false);
             $table->boolean('is_anonymous')->default(false);
+            
             $table->timestamps();
         });
 

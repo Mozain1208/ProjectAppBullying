@@ -14,32 +14,32 @@ class SiteSettingSeeder extends Seeder
     {
         $settings = [
             [
-                'setting_key' => 'school_name',
-                'setting_value' => 'SMK Mandiri Bersemi Cianjur',
+                'key' => 'school_name',
+                'value' => 'SMK Mandiri Bersemi Cianjur',
             ],
             [
-                'setting_key' => 'school_address',
-                'setting_value' => 'Jl. Raya Cianjur - Sukabumi, Cianjur, Jawa Barat',
+                'key' => 'school_address',
+                'value' => 'Jl. Raya Cianjur - Sukabumi, Cianjur, Jawa Barat',
             ],
             [
-                'setting_key' => 'contact_email',
-                'setting_value' => 'info@smkmandiribersemi.sch.id',
+                'key' => 'contact_email',
+                'value' => 'info@smkmandiribersemi.sch.id',
             ],
             [
-                'setting_key' => 'contact_phone',
-                'setting_value' => '(0263) 1234567',
+                'key' => 'contact_phone',
+                'value' => '(0263) 1234567',
             ],
             [
-                'setting_key' => 'welcome_message',
-                'setting_value' => 'Selamat datang di Platform Pengaduan Bullying SMK Mandiri Bersemi. Mari bersama kita wujudkan lingkungan sekolah yang aman dan nyaman.',
+                'key' => 'welcome_message',
+                'value' => 'Selamat datang di Platform Pengaduan Bullying SMK Mandiri Bersemi. Mari bersama kita wujudkan lingkungan sekolah yang aman dan nyaman.',
             ],
         ];
 
         foreach ($settings as $setting) {
             DB::table('site_settings')->updateOrInsert(
-                ['setting_key' => $setting['setting_key']],
+                ['key' => $setting['key']],
                 [
-                    'setting_value' => $setting['setting_value'],
+                    'value' => $setting['value'],
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]
